@@ -1,109 +1,85 @@
-# Content-Based Movie Recommendation System  
+# Content-Based Movie Recommendation System
 
-This repository contains a simple content-based movie recommendation system using **TF-IDF** and **cosine similarity**. Given a short text query describing a movie, the system returns the most relevant movies from the dataset.  
+This repository contains a simple content-based movie recommendation system using **TF-IDF** and **cosine similarity**. Given a short text query describing a movie, the system returns the most relevant movies from the dataset.
 
-## Features  
-- Processes movie metadata, including genres, keywords, and overviews.  
-- Uses **TF-IDF vectorization** to convert text into numerical form.  
-- Computes **cosine similarity** between the user query and each movie.  
-- Returns the top matching movies based on similarity scores.  
+## Features
 
-## Installation  
+- Processes movie metadata, including genres, keywords, and overviews.
+- Uses **TF-IDF vectorization** to convert text into numerical form.
+- Computes **cosine similarity** between the user query and each movie.
+- Returns the top matching movies based on similarity scores.
 
-### 1. Clone the Repository  
+## Installation
+
+### Prerequisites
+
+- Python 3.6 or higher
+
+### 1. Clone the Repository
+
 ```bash
-git clone [YOUR_FORKED_REPO_URL]
-cd [PROJECT_DIRECTORY]
+git clone https://github.com/knarula2099/lumaa-spring-2025-ai-ml.git
+cd lumaa-spring-2025-ai-ml
 ```
 
-### 2. Install Dependencies  
+### 2. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the Recommendation System  
+### 3. Run the Recommendation System
+
 ```bash
-python movie_recommender.py "A sci-fi adventure about space exploration and survival."
+python recommend.py "{Your Query Here}"
 ```
-Modify the query to test different recommendations.  
 
-## Dataset  
+Modify the query to test different recommendations.
 
-The dataset should contain the following fields:  
-- `title`: Movie title  
-- `overview`: Short description of the movie  
-- `genres`: Movie genres  
-- `keywords`: Key themes related to the movie  
+## Dataset
 
-Dataset file: **movies_sample.csv** (replace with actual file name if different).  
+The dataset should contain the following fields:
 
-## How It Works  
+- `id`: Unique identifier for the movie
+- `title`: Movie title
+- `overview`: Short description of the movie
+- `genres`: Movie genres
+- `keywords`: Key themes related to the movie
 
-1. **Data Preprocessing**  
-   - Reads the dataset from a CSV file.  
-   - Cleans and processes `genres`, `keywords`, and `overview`.  
-   - Enhances genre importance by repeating them in the text.  
+Dataset file: **movies_sample.csv**.
 
-2. **TF-IDF Vectorization**  
-   - Converts text fields into a numerical representation.  
-   - Uses **sublinear TF scaling** and **L2 normalization** for better performance.  
+Dataset source: [Kaggle Movies Dataset](https://www.kaggle.com/datasets/abdallahwagih/movies)
 
-3. **Similarity Calculation**  
-   - Computes **cosine similarity** between the user's query and all movies.  
-   - Sorts results and returns the top matches.  
+All dataset filtering was done in the `preproccessing.ipynb` Jupyter Notebook.
 
-## Testing Effectiveness  
+## How It Works
 
-To verify the system’s performance, try running:  
-```bash
-python movie_recommender.py "A sci-fi adventure about space exploration and survival."
-```
-Expected output should include relevant science-fiction movies.  
+1. **Data Preprocessing**
 
-If the results are not as expected, adjustments to **genre weighting** or **TF-IDF preprocessing** may be needed.  
+   - Reads the dataset from a CSV file.
+   - Cleans and processes `genres`, `keywords`, and `overview`.
+   - Enhances genre importance by repeating them in the text.
 
-## Deliverables  
+2. **TF-IDF Vectorization**
 
-- **Fork the Public Repository**  
-  - This repository must be forked into your GitHub account.  
+   - Converts text fields into a numerical representation.
+   - Uses **sublinear TF scaling** and **L2 normalization** for better performance.
 
-- **Implement Your Solution**  
-  - Load and preprocess the dataset.  
-  - Convert text data into vectors using **TF-IDF**.  
-  - Compute similarity between the query and movie descriptions.  
-  - Return the top matches.  
+3. **Similarity Calculation**
+   - Computes **cosine similarity** between the user's query and all movies.
+   - Sorts results and returns the top matches.
 
-- **Salary Expectation**  
-  - Expected salary per month: **[PLACEHOLDER]**  
+## Video Demo
 
-- **Short Video Demo**  
-  - A brief video demonstration should be provided.  
-  - Create a file `demo.md` and paste a link to the screen recording showing:  
-    - Running the recommendation code.  
-    - A sample query and results.  
+Video Link in `video_demo.md`
 
-- **Submission Deadline**  
-  - Submit the forked repository by **Sunday, Feb 23rd, 11:59 PM PST**.  
+## Salary Expectations
 
-## Evaluation Criteria  
+Based on market trends and my experience, my salary expectation is approximately **$8,000** per month.
 
-1. **Functionality**  
-   - The code should run without errors.  
-   - It should correctly return relevant movie recommendations.  
+## Contact
 
-2. **Code Quality**  
-   - Logical and well-structured implementation.  
-   - Clear comments where necessary.  
+For any questions, reach out at:
 
-3. **Clarity**  
-   - The README should clearly explain setup, execution, and expected results.  
-
-4. **Understanding of Content-Based Recommendation Systems**  
-   - Proper use of **TF-IDF** and **cosine similarity** for recommendations.  
-
-## License  
-[Specify License Here]  
-
-## Contact  
-For any questions, reach out at:  
-[Your Email or GitHub Profile]  
+- Email: [karannarula@outlook.com](mailto:karannarula@outlook.com)
+- LinkedIn: [https://www.linkedin.com/in/knarula03](https://www.linkedin.com/in/knarula03)

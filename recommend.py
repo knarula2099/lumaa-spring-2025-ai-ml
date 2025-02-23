@@ -7,7 +7,15 @@ import numpy as np
 
 
 def clean_text(text):
-    """Enhanced text cleaning with better handling of edge cases."""
+    """
+    Cleans the input text by handling edge cases and converting it to lowercase.
+
+    Args:
+        text (str): The input text to be cleaned.
+
+    Returns:
+        str: The cleaned text.
+    """
     if not isinstance(text, str):
         return ""
     try:
@@ -19,7 +27,15 @@ def clean_text(text):
 
 
 def preprocess_data(filepath):
-    """Loads and preprocesses the dataset with weighted features."""
+    """
+    Loads and preprocesses the dataset by cleaning text fields and combining them with weighted features.
+
+    Args:
+        filepath (str): The path to the CSV file containing the movie dataset.
+
+    Returns:
+        DataFrame: The preprocessed movie dataset.
+    """
     movies = pd.read_csv(filepath)
 
     # Clean text fields
@@ -40,7 +56,16 @@ def preprocess_data(filepath):
 
 
 def train_tfidf(movies):
-    """Fits a TF-IDF vectorizer with bigrams and IDF enabled."""
+    """
+    Fits a TF-IDF vectorizer on the combined text of the movies dataset.
+
+    Args:
+        movies (DataFrame): The preprocessed movie dataset.
+
+    Returns:
+        TfidfVectorizer: The fitted TF-IDF vectorizer.
+        sparse matrix: The TF-IDF matrix for the combined text.
+    """
     vectorizer = TfidfVectorizer(
         stop_words="english", sublinear_tf=True, norm='l2', ngram_range=(1, 2), use_idf=True
     )
@@ -49,7 +74,19 @@ def train_tfidf(movies):
 
 
 def recommend_movies(query, movies, vectorizer, tfidf_matrix, top_n=5):
-    """Enhanced movie recommendation function with genre weighting."""
+    """
+    Recommends movies based on the input query using cosine similarity.
+
+    Args:
+        query (str): The user's movie description for recommendations.
+        movies (DataFrame): The preprocessed movie dataset.
+        vectorizer (TfidfVectorizer): The fitted TF-IDF vectorizer.
+        tfidf_matrix (sparse matrix): The TF-IDF matrix for the combined text.
+        top_n (int, optional): The number of top recommendations to return. Defaults to 5.
+
+    Returns:
+        str: The formatted string of top movie recommendations.
+    """
     query_vec = vectorizer.transform([query])
     similarity_scores = cosine_similarity(query_vec, tfidf_matrix).flatten()
 
@@ -74,7 +111,7 @@ def recommend_movies(query, movies, vectorizer, tfidf_matrix, top_n=5):
             break
 
     # Generate output
-    output = "\n📽️ **Top Movie Recommendations 2:**\n"
+    output = "\n📽️ **Top Movie Recommendations:**\n"
     for idx, similarity in final_recommendations:
         row = movies.iloc[idx]
         output += (
@@ -88,6 +125,9 @@ def recommend_movies(query, movies, vectorizer, tfidf_matrix, top_n=5):
 
 
 def main():
+    """
+    Main function to parse arguments, preprocess data, train the TF-IDF vectorizer, and print movie recommendations.
+    """
     parser = argparse.ArgumentParser(
         description="Content-Based Movie Recommendation System")
     parser.add_argument("query", type=str,
