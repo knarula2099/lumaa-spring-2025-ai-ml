@@ -1,0 +1,110 @@
+import pandas as pd
+import ast
+import argparse
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+
+
+def clean_text(text):
+    """Enhanced text cleaning with better handling of edge cases."""
+    if not isinstance(text, str):
+        return ""
+    try:
+        if text.startswith("["):
+            return " ".join(ast.literal_eval(text))
+        return text.lower().strip()
+    except (ValueError, SyntaxError):
+        return text.lower().strip()
+
+
+def preprocess_data(filepath):
+    """Loads and preprocesses the dataset with weighted features."""
+    movies = pd.read_csv(filepath)
+
+    # Clean text fields
+    movies["genres"] = movies["genres"].apply(clean_text)
+    movies["keywords"] = movies["keywords"].apply(clean_text)
+    movies["overview"] = movies["overview"].fillna("")
+
+    # Give more weight to important features
+    movies["combined_text"] = (
+        (movies["genres"] + " ") * 2 +  # Double weight for genres
+        movies["keywords"] + " " +
+        movies["overview"]
+    )
+
+    # Drop rows with missing descriptions
+    movies = movies.dropna(subset=["combined_text"])
+    return movies
+
+
+def train_tfidf(movies):
+    """Fits a TF-IDF vectorizer with bigrams and IDF enabled."""
+    vectorizer = TfidfVectorizer(
+        stop_words="english", sublinear_tf=True, norm='l2', ngram_range=(1, 2), use_idf=True
+    )
+    tfidf_matrix = vectorizer.fit_transform(movies["combined_text"])
+    return vectorizer, tfidf_matrix
+
+
+def recommend_movies(query, movies, vectorizer, tfidf_matrix, top_n=5):
+    """Enhanced movie recommendation function with genre weighting."""
+    query_vec = vectorizer.transform([query])
+    similarity_scores = cosine_similarity(query_vec, tfidf_matrix).flatten()
+
+    # Apply a threshold to avoid weak matches
+    threshold = np.percentile(similarity_scores, 80)  # Top 20% only
+    top_indices = similarity_scores.argsort()[::-1]
+    filtered_indices = [
+        idx for idx in top_indices if similarity_scores[idx] >= threshold]
+
+    if not filtered_indices:
+        return "❌ No strong recommendations found. Try a different description."
+
+    # Get top-N recommendations, ensuring uniqueness
+    recommended_titles = set()
+    final_recommendations = []
+    for idx in filtered_indices:
+        title = movies.iloc[idx]["title"]
+        if title not in recommended_titles:
+            final_recommendations.append((idx, similarity_scores[idx]))
+            recommended_titles.add(title)
+        if len(final_recommendations) >= top_n:
+            break
+
+    # Generate output
+    output = "\n📽️ **Top Movie Recommendations 2:**\n"
+    for idx, similarity in final_recommendations:
+        row = movies.iloc[idx]
+        output += (
+            f"\n🎬 **Title:** {row['title']}\n"
+            f"⭐ **Similarity Score:** {similarity:.2f}\n"
+            f"🎭 **Genres:** {row['genres']}\n"
+            f"📖 **Description:** {row['overview']}\n"
+            f"{'-'*80}\n"
+        )
+    return output
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Content-Based Movie Recommendation System")
+    parser.add_argument("query", type=str,
+                        help="User's movie description for recommendations")
+    args = parser.parse_args()
+
+    # Load and preprocess data
+    movies = preprocess_data("movies_sample.csv")
+    vectorizer, tfidf_matrix = train_tfidf(movies)
+
+    # Get recommendations
+    recommendations = recommend_movies(
+        args.query, movies, vectorizer, tfidf_matrix)
+
+    # Print results
+    print(recommendations)
+
+
+if __name__ == "__main__":
+    main()
