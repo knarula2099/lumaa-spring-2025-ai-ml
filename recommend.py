@@ -43,9 +43,9 @@ def preprocess_data(filepath):
     movies["keywords"] = movies["keywords"].apply(clean_text)
     movies["overview"] = movies["overview"].fillna("")
 
-    # Give more weight to important features
+    # Combine text fields with text features
     movies["combined_text"] = (
-        (movies["genres"] + " ") * 2 +  # Double weight for genres
+        (movies["genres"] + " ") +
         movies["keywords"] + " " +
         movies["overview"]
     )
